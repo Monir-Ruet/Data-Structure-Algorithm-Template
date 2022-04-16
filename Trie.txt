@@ -1,0 +1,55 @@
+// Trie obj
+
+
+struct Node{
+  bool isleaf=false;
+  Node* alpha[128];
+  Node(){
+    for(int i=0;i<128;i++)
+      alpha[i]=nullptr;
+  }
+};
+struct Trie{
+  Node* container;
+  vector<string>v;
+  public:
+  Trie(){
+    container=new Node();
+  }
+  void add(Node * root, string s){
+    for(auto i:s){
+      if(root->alpha[i]==nullptr)
+        root->alpha[i]=new Node();
+      root=root->alpha[i];
+    }
+    root->isleaf=1;
+  }
+  void add(string s){
+    add(container,s);
+  }
+  bool find(Node * root, string s){
+    for(auto i:s){
+      if(root->alpha[i]==nullptr)
+        return 0;
+      root=root->alpha[i];
+    }
+    return root->isleaf;
+  }
+  bool find(string s){
+    return find(container,s);
+  }
+  vector<string>GetAll(){
+    v.clear();
+    printAll(container,"");
+    return v;
+  }
+  void printAll(Node* root,string s){
+    if(root->isleaf)
+      v.push_back(s);
+    for(int i=0;i<128;i++){
+      if(root->alpha[i]!=nullptr)
+        printAll(root->alpha[i],s+char(i));
+    }
+  }
+};
+

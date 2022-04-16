@@ -1,0 +1,37 @@
+const int N=2e5,K=18;
+vector<ll>adj[N];
+struct LCA{
+  int tin[N],tout[N],timer,dist[N];
+  vector<vector<int>>parent;
+  LCA(){
+    timer=0;
+    parent.resize(N,vector<int>(K));
+    dist[0]=-1;
+  }
+  void dfs(int s,int p){
+    tin[s]=timer++;
+    dist[s]=dist[p]+1;
+    parent[s][0]=p;
+    for(int i=1;i<K;i++)
+      parent[s][i]=parent[parent[s][i-1]][i-1];
+    for(auto i:adj[s]){
+      if(i==p) continue;
+      dfs(i,s);
+    }
+    tout[s]=timer++;
+  }
+  bool isAnchestor(ll u,ll v){
+    return tin[u]<=tin[v] && tout[u]>=tout[v];
+  }
+  ll find(ll u,ll v){
+    if(isAnchestor(u,v))
+      return u;
+    else if(isAnchestor(v,u))
+      return v;
+    for(int i=K-1;i>=0;i--){
+      if(!isAnchestor(parent[u][i],v))
+        u=parent[u][i];
+    }
+    return parent[u][0];
+  }
+};

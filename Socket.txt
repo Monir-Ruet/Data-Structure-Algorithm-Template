@@ -1,0 +1,51 @@
+const int port=1081;
+class Client{
+  public:
+  int fd;
+  struct sockaddr_in client;
+  Client(int __fd,struct sockaddr_in& c ){
+    fd=__fd,client=c;
+  }
+};
+class Socket{
+  int fd;
+  struct sockaddr_in server,client;
+  public:
+  Socket(){
+    fd=socket(AF_INET,SOCK_STREAM,0);
+  }
+  void SetSockOpt(){
+    int opt=1;
+    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,&opt, sizeof(opt))){
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+  }
+  void Bind(const char* host,int port){
+    memset(&server,'\0',sizeof(server));
+    server.sin_port=htons(port);
+    server.sin_family=AF_INET;
+    inet_aton(host, &server.sin_addr);
+    if(bind(fd,(struct sockaddr*) &server,sizeof(server))<0){
+      perror("- Bind Failed");
+      exit(0);
+    }else
+      cout<<"+ Bind Successfull...\n";
+  }
+  void Listen(){
+    if(listen(fd,100)<0){
+      perror("- Listenning Failed");
+      exit(0);
+    }else
+      cout<<"+ Listenning...\n";
+  }
+  Client Accept(){
+    int nfd;
+    socklen_t clilen=sizeof(client);
+    if(nfd=accept(fd,(struct sockaddr*) & client,&clilen)<0)
+      perror("- Opps");
+    cout<<nfd<<nl;
+    return {nfd,client};
+  }
+};
+

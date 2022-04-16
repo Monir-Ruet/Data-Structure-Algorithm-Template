@@ -1,0 +1,8 @@
+ll Hash(string s){
+  ll p=131,mod=1e9+7,q=1,ans=0;
+  for(auto i:s){
+    ans=(ans+i * q)%mod;
+    q=(p*q)%mod;
+  }
+  return ans;
+}

@@ -1,0 +1,32 @@
+struct Line{
+  ll m,c;
+  Line():m(INT_MAX),c(INT_MAX){}
+  Line(ll x,ll y):m(x),c(y){}
+  ll y(ll x){
+    return m*x+c;
+  }
+};
+const ll N=1e5;
+Line T[N*4];
+void add(Line a,int node=1,int l=0,int r=N){
+  int m=(l+r)/2;
+  bool lef=a.y(l)<T[node].y(l);
+  bool mid=a.y(m)<T[node].y(m);
+  if(mid)
+    swap(a,T[node]);
+  if(r-l==1)
+    return;
+  else if(lef!=mid)
+    add(a,node*2,l,m);
+  else
+    add(a,node*2+1,m,r);
+}
+ll get(ll x,int node=1,int l=0,int r=N){
+  int m=(l+r)/2;
+  if(r-l==1)
+    return T[node].y(x);
+  else if(x<m)
+    return min(T[node].y(x),get(x,node*2,l,m));
+  else
+    return min(T[node].y(x),get(x,node*2+1,m,r));
+}

@@ -1,0 +1,41 @@
+struct DSU{
+  vector<int>parent,size;
+  DSU(){};
+  DSU(int n){
+    init(n);
+  }
+  void init(int n){
+    parent.resize(n+1);
+    size.resize(n+1);
+    for(int i=0;i<=n;i++)
+      parent[i]=i,size[i]=1;
+  }
+  int find(int i){
+    if(parent[i]==i)
+      return i;
+    return parent[i]=find(parent[i]);
+  }
+  void add(int a,int b){
+    a=find(a),b=find(b);
+    if(a!=b){
+      if(size[a]<size[b])
+        swap(a,b);
+      parent[b]=a;
+      size[a]+=size[b];
+    }
+  }
+};
+const int N=1e5;
+vector<array<ll,3>> KRUSKAL(vector<array<ll,3>>edge){
+  vector<array<ll,3>>ans;
+  sort(edge.begin(),edge.end());
+  DSU a(N);
+  for(auto i:edge){
+    if(a.find(i[1])!=a.find(i[2])){
+      a.add(i[1],i[2]);
+      ans.push_back({i[1],i[2],i[0]});
+    }
+  }
+  return ans;
+}
+

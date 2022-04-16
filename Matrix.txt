@@ -1,0 +1,136 @@
+template<typename T>
+struct Matrix{
+  int r=0,c=0;
+  vector<vector<T>>mat;
+  Matrix(){}
+  Matrix(vector<vector<T>>v):mat(v),r(v.size()),c(v[0].size()){}
+  Matrix operator=(const Matrix a){
+    mat=move(a.mat);
+    r=a.r;
+    c=a.c;
+    return *this;
+  }
+  Matrix operator*(const Matrix a){
+    assert(c==a.r && "A");
+    vector<vector<T>>result(r,vector<T>(a.c));
+    for(int i=0;i<r;i++){
+      for(int j=0;j<a.c;j++){
+        result[i][j]=0;
+        for(int k=0;k<c;k++){
+          result[i][j]+=mat[i][k] * a.mat[k][j];
+        }
+      }
+    }
+    mat=result;
+    c=a.c;
+    return *this;
+  }
+  Matrix operator+=(Matrix a){
+    assert(a.r==r && a.c==c);
+    for(int i=0;i<r;i++){
+      for(int j=0;j<c;j++)
+        mat[i][j]+=a.mat[i][j];
+    }
+    return *this;
+  }
+  Matrix operator-=(Matrix a){
+    assert(a.r==r && a.c==c);
+    for(int i=0;i<r;i++){
+      for(int j=0;j<c;j++)
+        mat[i][j]-=a.mat[i][j];
+    }
+    return *this;
+  }
+  Matrix operator+(Matrix a){
+    return *this+=a;
+  }
+  Matrix operator-(Matrix a){
+    return *this-=a;
+  }
+  Matrix operator%(ll mod){
+    for(int i=0;i<r;i++)
+      for(int j=0;j<c;j++)
+        mat[i][j]-=((mat[i][j]/mod)*mod);
+    return *this;
+  }
+  Matrix operator/=(const Matrix a){
+    return *this=a;
+  }
+  Matrix operator*=(const Matrix a){
+    return *this*a;
+  }
+  void print(){
+    for(int i=0;i<r;i++){
+      for(int j=0;j<c;j++)
+        cout<<mat[i][j]<<" ";
+      cout<<nl;
+    }
+  }
+};
+vector<double>sol(100);
+template<class T>
+ll det(T a,int row,ll mask,ll n){
+  if(row==n)
+    return 1;
+  ll ans=0,s=1;
+  for(int i=0;i<n;i++){
+    if(mask & (1<<i)) continue;
+    ans+=(s*a.mat[row][i] * det(a,row+1,mask |(1<<i),n));
+    s*=-1;
+  }
+  return ans;
+}
+template<class T>
+T expo(T a,ll b,ll mod){
+  if(b==0){
+    vector<vector<ll>>v(a.mat.size(),vector<ll>(a.mat.size(),0));
+    for(int i=0;i<a.mat.size();i++)
+      v[i][i]=1;
+    return v;
+  }
+  T ans=expo(a,b/2,mod);
+  ans=(ans*ans)%mod;
+  if(b&1)
+    ans*=a;
+  return ans%mod;
+}
+const double EPS=1e-9;
+template<class T>
+double gauss(T a,int n){
+  double det=1.0;
+  for(int i=0;i<n;i++){
+    int k=i;
+    for(int j=i+1;j<n;j++){
+      if(abs(a.mat[k][i])<abs(a.mat[j][i]))
+        k=j;
+    }
+    if(abs(a.mat[k][i])<EPS){
+      det=0;
+      break;
+    }
+    if(i!=k){
+      swap(a.mat[i],a.mat[k]);
+      det=-det;
+    }
+    det*=a.mat[i][i];
+    for(int j=i+1;j<n;j++){
+      double t=a.mat[j][i]/a.mat[i][i];
+      for(int k=i;k<=n;k++)
+        a.mat[j][k]-=(t*a.mat[i][k]);
+    }
+  }
+  sol=eqnSoln(a,n);
+  return det;
+}
+template<class T>
+vector<double> eqnSoln(T a,int n){
+  vector<double>sol(n);
+  for(int i=n-1;i>=0;i--){
+    for(int j=n-1;j>i;j--){
+      a.mat[i][n]-=(sol[j] * a.mat[i][j]);
+    }
+    sol[i]=(a.mat[i][n]/a.mat[i][i]);
+  }
+  return sol;
+}
+

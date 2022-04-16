@@ -1,0 +1,23 @@
+vector<vector<pair<ll,ll>>>adj;
+vector<ll>dist,parent;
+#define f first
+#define s second
+
+void dijkstra(int s){
+  priority_queue<pair<ll,ll>>q;
+  fill(dist.begin(),dist.end(),INT_MAX);
+  q.push({0,s});
+  parent[s]=-1;
+  dist[s]=0;
+  while(!q.empty()){
+    pair<ll,ll>u=q.top();
+    q.pop();
+    for(auto i:adj[u.s]){
+      if(dist[i.f]>dist[u.s]+i.s){
+        dist[i.f]=dist[u.s]+i.s;
+        q.push({dist[i.f],i.f});
+        parent[i.f]=u.s;
+      }
+    }
+  }
+}

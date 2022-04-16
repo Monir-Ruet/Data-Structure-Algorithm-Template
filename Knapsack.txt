@@ -1,0 +1,9 @@
+ll Knapsack(vector<int>w,vector<int>p,int k){
+  vector<int>dp(k+1,0);
+  for(int i=0;i<w.size();i++){
+    for(int j=k-w[i];j>=0;j--){
+      dp[ j + w[i] ]=max( dp[ j + w[i]],dp[j]+p[i]);
+    }
+  }
+  return *max_element(dp.begin(),dp.end());
+}

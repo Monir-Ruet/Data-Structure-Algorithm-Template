@@ -1,0 +1,25 @@
+const int N=2e5;
+int T[N][18],LOG[N+1];
+void LOGARITHM(ll n){
+  LOG[1]=0;
+  for(int i=2;i<=n;i++)
+    LOG[i]=LOG[i/2]+1;
+}
+ll operation(int a,int b){
+  // change here according to your need like sum , gcd, xor etc
+  return __gcd(a,b);
+}
+void SPTABLE(vector<ll>a){
+  int n=a.size();
+  LOGARITHM(n);
+  for(int i=0;i<n;i++) T[i][0]=a[i];
+  for(int j=1;j<18;j++){
+    for(int i=0;i+(1<<j)<=n;i++)
+      T[i][j]=operation(T[i][j-1],T[ i + (1<<(j-1)) ][j-1]);
+  }
+}
+ll query(int l,int r){
+  int d=r-l+1;
+  int k=LOG[d];
+  return operation(T[l][k],T[r-(1<<k)+1][k]);
+}

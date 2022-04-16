@@ -1,0 +1,23 @@
+const int N=1e5+5;
+vector<int>adj[N];
+int dist[N];
+void bfs(int s){
+  dist[s]=0;
+  bool visited[N];
+  memset(visited,false,sizeof(visited));
+  queue<int>q;
+  q.push(s);
+  visited[s]=1;
+  while(!q.empty()){
+    int u=q.front();
+    q.pop();
+    for(auto i:adj[u]){
+      if(!visited[i]){
+        visited[i]=1;
+        dist[i]=dist[u]+1;
+        q.push(i);
+      }
+    }
+  }
+}
+

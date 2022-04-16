@@ -1,0 +1,41 @@
+const int N=1e6+5;
+struct SegmentTree{
+  vector<ll>Tree;
+  SegmentTree(){
+    Tree.resize(3*N);
+  }
+  SegmentTree(vector<ll>a):SegmentTree(){
+    build(a,1,0,a.size()-1);
+  }
+  void build(vector<ll>a,int node,int l,int r){
+    if(l==r){
+      Tree[node]=a[l];
+      return;
+    }
+    int mid=(l+r)/2;
+    build(a,node*2,l,mid);
+    build(a,node*2+1,mid+1,r);
+    Tree[node]=min(Tree[node*2],Tree[node*2+1]);
+  }
+  ll query(int node,int l,int r,int i,int j){
+    if(l>=i && r<=j)
+      return Tree[node];
+    if(l>j || r<i)
+      return INT_MAX;
+    int mid=(l+r)/2;
+    return min(query(node*2,l,mid,i,j),query(node*2+1,mid+1,r,i,j));
+  }
+  void update(int node,int l,int r,int i,int v){
+    if(l==r && l==i){
+      Tree[node]=v;
+      return;
+    }
+    if(l>i || r<i)
+      return;
+    int mid=(l+r)/2;
+    update(node*2,l,mid,i,v);
+    update(node*2+1,mid+1,r,i,v);
+    Tree[node]=min(Tree[node*2],Tree[node*2+1]);
+  }
+};
+

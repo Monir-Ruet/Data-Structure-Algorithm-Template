@@ -1,0 +1,80 @@
+// Codeforces 1658D2 Binary Trie
+
+struct TRIE{
+  vector<array<int,2>>next;
+  vector<int>cnt;
+  int root,bit=20;
+  TRIE(){
+    next.push_back({-1,-1});
+    root=0;
+    cnt.push_back(0);
+  }
+  void add(ll x){
+    int cur=root;
+    cnt[cur]++;
+    for(int i=bit;i>=0;i--){
+      int t= (x>>i) & 1;
+      if(next[cur][t]==-1){
+        next[cur][t]=next.size();
+        next.push_back({-1,-1});
+        cnt.push_back(0);
+      }
+      cur=next[cur][t];
+      cnt[cur]++;
+    }
+  }
+  bool find(ll x){
+    int cur=root;
+    for(int i=bit;i>=0;i--){
+      int t= (x>>i) & 1;
+      if(next[cur][t]==-1 || !cnt[cur]) return 0;
+      cur=next[cur][t];
+    }
+    return 1;
+  }
+  void erase(ll x){
+    int cur=root;
+    if(!cnt[cur]) return;
+    cnt[cur]--;
+    for(int i=bit;i>=0;i--){
+      int t= (x>>i) & 1;
+      cur=next[cur][t];
+      if(cur==-1 || !cnt[cur])
+        return;
+      cnt[cur]--;
+    }
+  }
+  ll q_min(ll x){
+    int cur=0;
+    if(!cnt[cur]) return -1;
+    ll ans=0;
+    for(int i=bit;i>=0;i--){
+      int t= (x>>i) & 1;
+      if(next[cur][t]!=-1 && cnt[next[cur][t]])
+        cur=next[cur][t];
+      else {
+        cur=next[cur][t ^ 1];
+        ans+= (1LL<<i);
+      }
+    }return ans;
+  }
+  ll q_max(ll x){
+    int cur=root;
+    if(!cnt[cur]) return -1;
+    ll ans=0;
+    for(int i=bit;i>=0;i--){
+      int t= (x>>i) & 1;
+      if(next[cur][1 ^ t]!=-1 && cnt[next[cur][1 ^ t]]){
+        cur=next[cur][1 ^ t];
+        ans+= 1LL <<i;
+      }else cur=next[cur][t];
+    }
+    return ans;
+  }
+  void clear(){
+    next.clear();
+    next.push_back({-1,-1});
+    cnt.clear();
+    cnt.push_back(0);
+  }
+};

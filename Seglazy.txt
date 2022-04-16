@@ -1,0 +1,45 @@
+// This template is for sum in a given range
+// Change according to your demand.
+const int N=1e5;
+struct SEGLAZY{
+  ll tree[N],todo[N];
+  SEGLAZY(){
+    memset(tree,0,sizeof(tree));
+    memset(todo,0,sizeof(todo));
+  }
+  SEGLAZY(int n){
+    fill(tree,tree+n,0);
+    fill(todo,todo+n,0);
+  }
+  void merge(int node){
+    tree[node]=tree[node*2]+tree[node*2+1];
+  }
+  void propagate(int node,int i,int j){
+    int mid=(i+j)/2;
+    todo[node*2]+=todo[node];
+    todo[node*2+1]+=todo[node];
+    tree[node*2]+=(mid-i+1)*todo[node];
+    tree[node*2+1]+=(j-mid)*todo[node];
+    todo[node]=0;
+  }
+  void update(int node,int i,int j,int l,int r,int v){
+    if(i>r || j<l) return;
+    if(i>=l && j<=r){
+      tree[node]+=(j-i+1)*v;
+      todo[node]+=v;
+      return;
+    }
+    int mid=(i+j)/2;
+    propagate(node,i,j);
+    update(node*2,i,mid,l,r,v);
+    update(node*2+1,mid+1,j,l,r,v);
+    merge(node);
+  }
+  ll query(int node,int i,int j,int l,int r){
+    if(i>r || j<l) return 0;
+    if(i>=l && j<=r) return tree[node];
+    int mid=(i+j)/2;
+    propagate(node,i,j);
+    return query(node*2,i,mid,l,r)+query(node*2+1,mid+1,j,l,r);
+  }
+};

@@ -1,0 +1,13 @@
+vector<vector<ll>>adj;
+vector<ll>color;
+bool isbipartite(int s,int c){
+  color[s]=c;
+  bool flag=1;
+  for(auto i:adj[s]){
+    if(color[i]==-1)
+      flag=isbipartite(i,c^1);
+    else
+      flag&=(color[i]!=color[s]);
+  }
+  return flag;
+}

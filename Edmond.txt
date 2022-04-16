@@ -1,0 +1,50 @@
+// Dinic Algorithm
+// Time complexity (VE^2)
+// Find an augmented path from source to sink and push flow
+// Constructor call - edmond a(n,adj,cap);
+
+struct edmond{
+#define f first
+#define s second
+  vector<vector<ll>>adj,cap;
+  vector<ll>parent;
+  edmond(){}
+  edmond(int n,vector<vector<ll>>a,vector<vector<ll>>b){
+    adj=a,cap=b;
+    parent.resize(n+1);
+  }
+  ll bfs(int s,int t){
+    fill(parent.begin(),parent.end(),-1);
+    parent[s]=-2;
+    queue<pair<ll,ll>>q;
+    q.push({s,LLONG_MAX});
+    while(!q.empty()){
+      ll u=q.front().f;
+      ll flow=q.front().s;
+      q.pop();
+      for(auto i:adj[u]){
+        if(parent[i]==-1 && cap[u][i]){
+          parent[i]=u;
+          ll newflow=min(flow,cap[u][i]);
+          if(i==t)
+            return newflow;
+          q.push({i,newflow});
+        }
+      }
+    }
+    return 0;
+  }
+  ll Maxflow(int s,int t){
+    ll cost=0,maxflow=0;
+    while(cost=bfs(s,t)){
+      maxflow+=cost;
+      for(ll cur=t;cur!=s;cur=parent[cur]){
+        ll prev=parent[cur];
+        cap[prev][cur]-=cost;
+        cap[cur][prev]+=cost;
+      }
+    }
+    return maxflow;
+  }
+};
+

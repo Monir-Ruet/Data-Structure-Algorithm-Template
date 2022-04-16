@@ -1,0 +1,36 @@
+struct Line{
+  __int128 m,c;  // __int128 for g++ 17 (64)
+  Line():m(),c(){}
+  Line(ll _m,ll _c) : m(_m),c(_c){}
+  __int128 valueAt(ll x){
+    return m*x+c;
+  }
+};
+struct CHT{
+  vector<Line>l;
+  vector<double>p;
+  bool isMax=0;
+  CHT(){}
+  CHT(bool _isMax):isMax(_isMax){}
+  void push(Line a){
+    while(!l.empty()){
+      Line b=l.back();
+      if((isMax && (a.valueAt(p.back()>=b.valueAt(p.back())))) || (!isMax && (a.valueAt(p.back())<=b.valueAt(p.back())))){
+        l.pop_back();
+        p.pop_back();
+      }else {
+        if(a.m-b.m){
+          l.push_back(a);
+          p.push_back((a.c-b.c)/(1.0* (b.m-a.m)));
+        }
+        return;
+      }
+    }
+    l.push_back(a);
+    p.push_back(-5000);
+}
+  ll get(ll x){
+    ll i=upper_bound(p.begin(),p.end(),x)-p.begin()-1;
+    return l[i].valueAt(x);
+  }
+};

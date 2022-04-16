@@ -1,0 +1,58 @@
+// Dinic's Algorithm
+// Time complexity :(v^2E);
+// While there is a augmented level path the Algorithm push flow through this path.
+// Constuctor call - Dinic(adj,cap,n)
+
+struct Dinic{
+  vector<vector<ll>>adj,cap;  // Adj for adjacency list ,cap for capacity of an edge
+  vector<ll>level;  // level is the depth of the vertices from the source
+  Dinic(){}
+  Dinic(vector<vector<ll>>a,vector<vector<ll>>b,int n){
+    adj=a,cap=b;
+    level=vector<ll>(n);
+  }
+  bool bfs(int s,int t){ // set level of the vertices
+    fill(level.begin(),level.end(),-1);
+    level[s]=0;
+    queue<ll>q;
+    q.push(s);
+    while(!q.empty()){
+      ll u=q.front();
+      q.pop();
+      for(auto i:adj[u]){
+        if(level[i]==-1 && cap[u][i]){
+          level[i]=level[u]+1;
+          q.push(i);
+        }
+      }
+    }
+    return level[t]!=-1;
+  }
+  ll dfs(int s,int t,int parent,ll flow){// find an augmented level path and push flow through the path
+    if(s==t)
+      return flow;
+    ll maxflow=0;
+    for(auto i:adj[s]){
+      if(level[i]==level[s]+1 && cap[s][i]){
+        maxflow=dfs(i,t,s,min(flow,cap[s][i]));
+        if(maxflow>0){
+          cap[s][i]-=maxflow;
+          cap[i][s]+=maxflow;
+          return maxflow;
+        }
+      }
+    }
+    return 0;
+  }
+  ll Maxflow(int s,int t){
+    if(s==t)
+      return -1;
+    ll maxflow=0,flow;
+    while(bfs(s,t)){
+      while(flow=dfs(s,t,-1,INT_MAX))
+        maxflow+=flow;
+    }
+    return maxflow;
+  }
+};
+

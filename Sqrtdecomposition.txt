@@ -1,0 +1,34 @@
+// constructor call  with a vector of type long long
+// ll mean long long
+struct SQRTDCOMP{
+  vector<ll>a,T;
+  int k;
+  SQRTDCOMP(){}
+  SQRTDCOMP(vector<ll>a){
+    this->a=a;
+    k=sqrt((int)a.size());
+    T.resize(k+1);
+    init();
+  }
+  ll operation(ll a,ll b){
+    // change operation according to your need
+    // only associative operations are applicable
+    return a+b;
+  }
+  void init(){
+    for(int i=0;i<(int)a.size();i++)
+      T[i/k]=operation(T[i/k],a[i]);
+  }
+  ll query(int l,int r){
+    //change ans according to operation
+    ll ans=LLONG_MAX,i=l;
+    for(;i<=r && i%k;i++)
+      ans=operation(ans,a[i]);
+    for(;i+k<=r;i+=k)
+      ans=operation(ans,T[i]);
+    for(;i<=r;i++)
+      ans=operation(ans,a[i]);
+    return ans;
+  }
+};
+
