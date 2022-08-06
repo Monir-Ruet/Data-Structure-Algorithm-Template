@@ -1,0 +1,21 @@
+const int N=1005;
+struct BIT2D{
+  ll bit[N][N];
+  void add(int i,int j,ll val){
+    for(int x=i;x<N;x+= x & -x){
+      for(int y=j;y<N;y+= y & -y)
+        bit[x][y]+=val;
+    }
+  }
+  ll sum(int i,int j){
+    ll ans=0;
+    for(int x=i;x>0;x-= x& -x){
+      for(int y=j;y>0; y-= y & -y)
+        ans+=bit[x][y];
+    }
+    return ans;
+  }
+  ll sum(int  u,int v,int x,int y){
+    return sum(u,v)-sum(x-1,y-1);
+  }
+};

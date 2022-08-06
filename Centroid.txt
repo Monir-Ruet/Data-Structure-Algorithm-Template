@@ -1,0 +1,33 @@
+ 
+const int N=2e5+5;
+ll subtree[N];
+bool mark[N];
+vector<ll>adj[N];
+
+int dfs(int s,int p){
+  subtree[s]=1;
+  for(auto i:adj[s]){
+    if(i==p || mark[i]) continue;
+    subtree[s]+=dfs(i,s);
+  }
+  return subtree[s];
+}
+int centroid(int s,int p,int n){
+  for(auto i:adj[s]){
+    if(i!=p && !mark[i] && subtree[i]>n/2)
+      return centroid(i,s,n);
+  }
+  return s;
+}
+void decompose(int s){
+  int cent=centroid(s,-1,dfs(s,-1));
+  mark[cent]=1;
+  debug(cent);
+  //
+  // Here goes the calculation of each centroid..
+  //
+  for(auto i:adj[cent]){
+    if(!mark[i])
+      decompose(i);
+  }
+}
