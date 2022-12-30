@@ -15,7 +15,7 @@ struct CHT{
   void push(Line a){
     while(!l.empty()){
       Line b=l.back();
-      if((isMax && (a.valueAt(p.back()>=b.valueAt(p.back())))) || (!isMax && (a.valueAt(p.back())<=b.valueAt(p.back())))){
+      if((isMax && (a.valueAt(p.back())>=b.valueAt(p.back()))) || (!isMax && (a.valueAt(p.back())<=b.valueAt(p.back())))){
         l.pop_back();
         p.pop_back();
       }else {

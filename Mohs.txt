@@ -1,14 +1,15 @@
 void add(int i);
 void remove(int i);
 ll get_answer();
-const int block_size=2000;
+const int BLOCK=330;
 struct Query{
   int l,r,idx;
   Query(int _l,int _r,int _idx){
     l=_l,r=_r,idx=_idx;
   }
-  bool operator<(Query other){
-    return make_pair(l/block_size,r)<make_pair(other.l/block_size,other.r);
+  inline bool operator<(Query & x) const{
+    if(l/BLOCK==x.l/BLOCK) return ((l/BLOCK) & 1)? r>x.r : r<x.r;
+    return l/BLOCK<x.l/BLOCK;
   }
 };
 

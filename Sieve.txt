@@ -1,10 +1,12 @@
-const int N=2e5+5;
+const int N=1e5+5;
 int pf[N];
 void sieve(){
   vector<int>primes;
   for(int i=2;i<N;i++){
     if(pf[i]==0) pf[i]=i,primes.push_back(i);
-    for(int j=0;j<primes.size() && primes[j]<=pf[i] && i*primes[j]<N;j++) pf[i*primes[j]]=primes[j];
+    int sz=primes.size();
+    for(int j=0;j<sz && primes[j]<=pf[i] && i*primes[j]<N;j++)
+      pf[i*primes[j]]=primes[j];
   }
 }
 

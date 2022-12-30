@@ -1,0 +1,21 @@
+//  https://forthright48.com/chinese-remainder-theorem-part-2-non-coprime-moduli/
+
+ll extended_gcd(ll a,ll b,ll &x,ll &y){
+  if(!b){
+    x=1,y=0;
+    return a;
+  }
+  ll x1,y1;
+  ll g=extended_gcd(b,a%b,x1,y1);
+  x=y1;
+  y=x1-a/b * y1;
+  return g;
+}
+pair<ll,ll>CHT(ll m1,ll a1,ll m2,ll a2){
+  ll p,q,g=extended_gcd(m1,m2,p,q);
+  if(a1%g!=a2%g) return {0,-1};
+  ll m=m1/g*m2;
+  p=(p%m+m)%m;
+  q=(q%m+m)%m;
+  return { ( (m1/g)  % m * p * a2 % m + ( m2 / g ) % m * q * a1 % m ) % m , m };
+}
