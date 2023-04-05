@@ -1,0 +1,46 @@
+const ll N=1e5;
+ll sz[N];
+bool big[N];
+vector<ll>adj[N];
+
+ll getsize(ll s,ll p){
+  sz[s]=1;
+  for(auto i:adj[s]){
+    if(i==p) continue;
+    getsize(i,s);
+    sz[s]+=sz[i];
+  }
+  return sz[s];
+}
+void add(int s,int p,int x){
+  // Do the stuffs
+  for(auto i:adj[s]){
+    if(i!=p && !big[i])
+      add(i,s,x);
+  }
+}
+void dfs(int s,int p,bool keep){
+  ll mx=-1,bigChild=-1;
+  for(auto i:adj[s]){
+    if(i==p) continue;
+    if(sz[i]>mx){
+      mx=sz[i];
+      bigChild=i;
+    }
+  }
+  for(auto i:adj[s]){
+    if(i!=p && i!=bigChild)
+      dfs(i,s,0);
+  }
+  if(bigChild!=-1){
+    dfs(bigChild,s,1);
+    big[bigChild]=1;
+  }
+  add(s,p,1);
+  // Query things
+  if(bigChild!=-1)
+    big[bigChild]=0;
+  if(keep==0)
+    add(s,p,-1);
+}
+
